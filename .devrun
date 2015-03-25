@@ -1,0 +1,17 @@
+#!/bin/bash
+
+`boot2docker shellinit`
+
+docker rm -f usage-to-librato
+docker build -t _dev/usage-to-librato .
+
+docker run -d --name usage-to-librato \
+  -v /proc:/parent-proc:ro \
+  -e PREFIX="test" \
+  -e INTERVAL="2000" \
+  -e LIBRATO_EMAIL="" \
+  -e LIBRATO_TOKEN="" \
+  -e PROC_PATH="/parent-proc/" \
+  _dev/usage-to-librato
+
+docker logs -f usage-to-librato
